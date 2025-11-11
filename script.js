@@ -47,8 +47,17 @@ function mineEventlistener() {
                                     isFirstClick = false
                            }
                            else {
+                                    
                                     //checkArea(element.target, 3, "mark")
                            }
+                           if (element.target.classList.contains("mine")){
+                                    element.classList.remove("blankDark")
+                                    element.classList.remove("blankLight")
+                                    element.classList.remove("unknownDark")
+                                    element.classList.remove("unknownLight")
+
+                           }
+                           clearBlanks(element.target)
                   })
          })
 }
@@ -74,9 +83,9 @@ function minePlanter(clickedCell, mineAmount) {
                   });
                   if (passed) mines.add(minePos.join(","));
          }
+         mineAssigner()
 }
 function checkArea(cell, size) {
-         console.log(cell.dataset.rowValue, cell.dataset.colValue);
          areaPattern.forEach((row, col) => {
          });
 }
@@ -95,4 +104,53 @@ function mineAssigner() {
 function randomInt(min, max) {
          return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+function clearBlanks(cell) {
+    const cellRow = parseInt(cell.dataset.rowValue)
+    const cellCol = parseInt(cell.dataset.colValue)
+
+    // skip if this cell is already revealed
+    if (cell.classList.contains("revealed")) return
+
+    // mark cell as revealed
+    cell.classList.add("revealed")
+    cell.classList.remove("unknownLight", "unknownDark")
+
+    // count adjacent mines
+    let mineCount = 0
+    areaPattern.forEach(([rOffset, cOffset]) => {
+        const r = cellRow + rOffset
+        const c = cellCol + cOffset
+        if (mines.has(`${r},${c}`)) mineCount++
+    })
+
+    // if there are adjacent mines, show the number and stop
+    if (mineCount > 0) {
+        cell.textContent = mineCount
+        return
+    }
+
+    // otherwise, recursively clear all neighbors
+    areaPattern.forEach(([rOffset, cOffset]) => {
+        const r = cellRow + rOffset
+        const c = cellCol + cOffset
+        // skip out-of-bounds
+        if (r < 1 || r > fieldHeight || c < 1 || c > fieldWidth) return
+        // recursively clear neighbor
+        const neighbor = document.querySelector(`td[data-row-value="${r}"][data-col-value="${c}"]`)
+        if (neighbor) clearBlanks(neighbor)
+    })
+}
+
+/*function clearBlanks(cell) {
+         let cellRow = parseInt(cell.dataset.rowValue)
+         let cellCol = parseInt(cell.dataset.colValue)
+         mines.forEach(mine =>{
+         areaPattern.forEach(([row, col])=>{
+                  if (mine.split(",")[0] == cellRow + row && mine.split(",")[1] == cellCol + col) {
+
+                  }
+         })
+         })
+
+}*/
 generateField(fieldWidth, fieldHeight)
