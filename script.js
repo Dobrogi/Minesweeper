@@ -74,7 +74,6 @@ function minePlanter(clickedCell, mineAmount) {
                   });
                   if (passed) mines.add(minePos.join(","));
          }
-         mineAssigner()
 }
 function checkArea(cell, size) {
          console.log(cell.dataset.rowValue, cell.dataset.colValue);
