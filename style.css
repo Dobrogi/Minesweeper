@@ -1,6 +1,4 @@
-html {
-         width: 100%;
-}
+
 
 body {
          background-color: #444;
@@ -38,9 +36,11 @@ table {
 
 section {
 
-         display: block;
+         display: flex;
+         justify-content: center;
          margin: auto;
-         width: fit-content;
+         width: 80vw;
+         overflow: auto;
 }
 
 .mine {
@@ -61,6 +61,9 @@ section {
 
 .blankDark {
          background-color: #6e6e6e;
+}
+.marked{
+    color: rgb(167, 30, 30);
 }
 
 
