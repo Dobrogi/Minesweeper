@@ -42,24 +42,45 @@ function generateField(...size) {
     table.innerHTML = field
     mineEventlistener()
     coolPattern()
-    console.log();
-
 }
 function mineEventlistener() {
     let fieldList = document.querySelectorAll("td")
-    fieldList.forEach(field => {
-        field.addEventListener("mousedown", (element) => {
-            
-            if (element.button == 2) mark()
+    const leftEventListener = (element) => { // <------ Disgusting variable
+        if (element.button == 0) {
+            // If it is the first click, it generates, the field
             if (isFirstClick) {
                 minePlanter(element.target, Math.floor((fieldHeight * fieldWidth / 10) * 1.5))
                 isFirstClick = false
             }
 
+            // If we are still in game, or the cell isnt a mine, we reveal the clicked cell
             if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); console.log(!isGameOver, !element.target.classList.contains("mine")) }
             else { revealMines(); isGameOver = true }
+        }
+    }
+    fieldList.forEach(field => {
+        // left ckick event listening
+        field.addEventListener("mousedown", leftEventListener)
 
+        //Right click/long holding on mobile, event listening = marking a tile
+        field.addEventListener("contextmenu", element => {
+            const tile = element.target
+            if (tile.classList.contains("unknownLight") || tile.classList.contains("unknownDark")) {
+                tile.classList.toggle("marked")
 
+                // If marked, doesnt listen to left clicks, and mark it
+                if (tile.classList.contains("marked")) {
+                    tile.removeEventListener("mousedown", leftEventListener)
+                    tile.textContent = "!"
+                    tile.style.color = "red";
+                }
+                // else, yeah, they do, and unmark
+                else {
+                    tile.addEventListener("mousedown", leftEventListener)
+                    tile.textContent = ""
+                    tile.style.color = "red";
+                }
+            }
         })
     })
 }
@@ -87,10 +108,6 @@ function minePlanter(clickedCell, mineAmount) {
     }
     mineAssigner()
 }
-function checkArea(cell, size) {
-    areaPattern.forEach((row, col) => {
-    });
-}
 function coolPattern() {
     let fieldList = document.querySelectorAll("td")
     fieldList.forEach(cell => {
@@ -111,7 +128,7 @@ function clearBlanks(cell) {
     const cellCol = parseInt(cell.dataset.colValue)
 
     // skip if this cell is already revealed
-    if (cell.classList.contains("blankLight") || cell.classList.contains("blankDark")) return
+    if (cell.classList.contains("blankLight") || cell.classList.contains("blankDark") || cell.classList.contains("marked")) return
 
     // mark cell as revealed
     cell.classList.remove("unknownLight", "unknownDark")
@@ -158,4 +175,5 @@ function revealMines() {
     })
 }
 
+document.addEventListener("contextmenu", e => e.preventDefault())
 generateField(fieldWidth, fieldHeight)
