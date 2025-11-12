@@ -1,7 +1,7 @@
 let isFirstClick = true
 let isGameOver = false
-const fieldHeight = 9
-const fieldWidth = 11
+const fieldHeight = 12
+const fieldWidth = 8
 const areaPattern = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1], [0, 0]]
 const bigAreaPattern = [
     [-2, -2], [-2, -1], [-2, 0], [-2, 1], [-2, 2],

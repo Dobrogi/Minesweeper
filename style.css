@@ -1,72 +1,89 @@
-
-
 body {
-         background-color: #444;
-         margin: 0;
-         padding: 0;
-         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-         font-weight: bolder;
+    background-color: #444;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bolder;
 }
 
 h1 {
-         text-align: center;
-         font-size: 6vh;
-         margin: 0;
+    text-align: center;
+    font-size: 6vh;
+    margin: 0;
 }
 
 td {
-         width: 6vh;
-         height: 6vh;
-         color: rgb(153, 153, 153);
-         font-weight: bold;
-         overflow: hidden;
-         font-size: 4vh;
-         text-align: center;
-         user-select: none;
+    width: 6vh;
+    height: 6vh;
+    color: rgb(153, 153, 153);
+    font-weight: bold;
+    overflow: hidden;
+    font-size: 4vh;
+    text-align: center;
+    user-select: none;
 }
 
 table {
-         border: 0.02vh solid black;
-         overflow-x: auto;
-         box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.515);
-         border-collapse: collapse;
-         border-radius: 1vh;
-         overflow: hidden;
-         color: #117c55;
+    border: 0.02vh solid black;
+    overflow-x: auto;
+    box-shadow: 0 1vh 1vh rgba(0, 0, 0, 0.515);
+    border-radius: 1vh;
+    overflow: hidden;
+    color: #117c55;
+    min-width: max-content;
+    border-collapse: collapse;
 }
 
 section {
 
-         display: flex;
-         justify-content: center;
-         margin: auto;
-         width: 80vw;
-         overflow: auto;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    height: fit-content;
+    padding: 2vh;
+    overflow: scroll;
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
 }
 
 .mine {
-         background-color: rgb(122, 20, 20);
+    background-color: rgb(122, 20, 20);
 }
 
 .unknownDark {
-         background-color: #306238;
+    background-color: #306238;
 }
 
 .unknownLight {
-         background-color: #306f34;
+    background-color: #306f34;
 }
 
 .blankLight {
-         background-color: rgb(122, 122, 122);
+    background-color: rgb(122, 122, 122);
 }
 
 .blankDark {
-         background-color: #6e6e6e;
+    background-color: #6e6e6e;
 }
-.marked{
+
+.marked {
     color: rgb(167, 30, 30);
 }
 
 
 
-@media (max-width:500px) {}
+@media (max-width:500px) {
+    td{
+        width: 5vh;
+        height: 5vh;
+        font-size: 3vh;
+    }
+}
+@media (max-width:400px) {
+    td{
+        width: 4vh;
+        height: 4vh;
+        font-size: 2vh;
+    }
+}
