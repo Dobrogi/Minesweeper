@@ -48,13 +48,18 @@ function generateField(...size) {
 function mineEventlistener() {
     let fieldList = document.querySelectorAll("td")
     fieldList.forEach(field => {
-        field.addEventListener("click", (element) => {
+        field.addEventListener("mousedown", (element) => {
+            
+            if (element.button == 2) mark()
             if (isFirstClick) {
                 minePlanter(element.target, Math.floor((fieldHeight * fieldWidth / 10) * 1.5))
                 isFirstClick = false
             }
-            if (!element.target.classList.contains("mine") && !isGameOver) clearBlanks(element.target)
-            else revealMines(); isGameOver = true
+
+            if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); console.log(!isGameOver, !element.target.classList.contains("mine")) }
+            else { revealMines(); isGameOver = true }
+
+
         })
     })
 }
