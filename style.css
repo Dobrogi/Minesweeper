@@ -82,8 +82,8 @@ section {
 }
 @media (max-width:400px) {
     td{
-        width: 4vh;
-        height: 4vh;
+        width: 4.5vh;
+        height: 4.5vh;
         font-size: 2vh;
     }
 }
