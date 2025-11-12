@@ -9,6 +9,12 @@ const bigAreaPattern = [
          [1, -2], [1, -1], [1, 0], [1, 1], [1, 2],
          [2, -2], [2, -1], [2, 0], [2, 1], [2, 2],
 ]
+const diamondAreaPattern = [
+  [0, 0],
+  [-1, 0], [1, 0], [0, -1], [0, 1],
+  [-2, 0], [2, 0], [0, -2], [0, 2],
+  [-1, -1], [-1, 1], [1, -1], [1, 1]
+]
 let mines = new Set()
 
 function generateField(...size) {
@@ -67,7 +73,7 @@ function minePlanter(clickedCell, mineAmount) {
          while (mines.size < mineAmount) {
                   let passed = true
                   let minePos = [randomInt(1, fieldHeight), randomInt(1, fieldWidth)]
-                  bigAreaPattern.forEach(([row, col]) => {
+                  diamondAreaPattern.forEach(([row, col]) => {
                            if (minePos[0] == cellRow + row && minePos[1] == cellCol + col) {
                                     passed = false
                            }
@@ -109,11 +115,12 @@ function clearBlanks(cell) {
     const cellCol = parseInt(cell.dataset.colValue)
 
     // skip if this cell is already revealed
-    if (cell.classList.contains("revealed")) return
+    if (cell.classList.contains("blankLight") || cell.classList.contains("blankDark")) return
 
     // mark cell as revealed
-    cell.classList.add("revealed")
     cell.classList.remove("unknownLight", "unknownDark")
+    if ((parseInt(cell.dataset.colValue) + parseInt(cell.dataset.rowValue)) % 2 == 0) cell.classList.add("blankDark")
+    else cell.classList.add("blankLight")
 
     // count adjacent mines
     let mineCount = 0
@@ -126,6 +133,16 @@ function clearBlanks(cell) {
     // if there are adjacent mines, show the number and stop
     if (mineCount > 0) {
         cell.textContent = mineCount
+        switch(mineCount){
+            case 1:cell.style.color = "blue";break
+            case 2:cell.style.color = "green";break
+            case 3:cell.style.color = "red";break
+            case 4:cell.style.color = "purple";break
+            case 5:cell.style.color = "maroon";break
+            case 6:cell.style.color = "orange";break
+            case 7:cell.style.color = "";break
+            case 8:cell.style.color = "blue";break
+        }
         return
     }
 
@@ -133,9 +150,7 @@ function clearBlanks(cell) {
     areaPattern.forEach(([rOffset, cOffset]) => {
         const r = cellRow + rOffset
         const c = cellCol + cOffset
-        // skip out-of-bounds
         if (r < 1 || r > fieldHeight || c < 1 || c > fieldWidth) return
-        // recursively clear neighbor
         const neighbor = document.querySelector(`td[data-row-value="${r}"][data-col-value="${c}"]`)
         if (neighbor) clearBlanks(neighbor)
     })

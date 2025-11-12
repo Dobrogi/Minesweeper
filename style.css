@@ -1,6 +1,7 @@
-html{
+html {
          width: 100%;
 }
+
 body {
          background-color: #444;
          margin: 0;
@@ -16,8 +17,13 @@ h1 {
 }
 
 td {
-         padding: 3vh;
-         
+         width: 6vh;
+         height: 6vh;
+         color: rgb(153, 153, 153);
+         font-weight: bold;
+         overflow: hidden;
+         font-size: 4vh;
+         text-align: center;
 }
 
 table {
@@ -27,6 +33,7 @@ table {
          border-collapse: collapse;
          border-radius: 1vh;
          overflow: hidden;
+         color: #117c55;
 }
 
 section {
@@ -39,6 +46,7 @@ section {
 .mine {
          background-color: rgb(122, 20, 20);
 }
+
 .unknownDark {
          background-color: #306238;
 }
@@ -47,16 +55,14 @@ section {
          background-color: #306f34;
 }
 
-.blankDark {
-         background-color: #555;
+.blankLight {
+         background-color: rgb(122, 122, 122);
 }
 
 .blankDark {
-         background-color: #333;
+         background-color: #6e6e6e;
 }
 
 
 
-@media (max-width:500px) {
-
-}
+@media (max-width:500px) {}
