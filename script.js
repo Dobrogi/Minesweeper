@@ -128,12 +128,13 @@ function clearBlanks(cell) {
     const cellCol = parseInt(cell.dataset.colValue)
 
     // skip if this cell is already revealed
-    if (cell.classList.contains("blankLight") || cell.classList.contains("blankDark") || cell.classList.contains("marked")) return
+    if (cell.classList.contains("blankLight") || cell.classList.contains("blankDark")) return
 
     // mark cell as revealed
     cell.classList.remove("unknownLight", "unknownDark")
     if ((parseInt(cell.dataset.colValue) + parseInt(cell.dataset.rowValue)) % 2 == 0) cell.classList.add("blankDark")
     else cell.classList.add("blankLight")
+    cell.textContent = ""
 
     // count adjacent mines
     let mineCount = 0
