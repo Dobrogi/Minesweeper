@@ -71,8 +71,6 @@ section {
     color: rgb(167, 30, 30);
 }
 
-
-
 @media (max-width:500px) {
     td{
         width: 5vh;

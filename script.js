@@ -45,7 +45,7 @@ function generateField(...size) {
 }
 function mineEventlistener() {
     let fieldList = document.querySelectorAll("td")
-    const leftEventListener = (element) => { // <------ Disgusting variable
+    const leftEventListener = (element) => {
         if (element.button == 0) {
             // If it is the first click, it generates, the field
             if (isFirstClick) {
@@ -55,15 +55,10 @@ function mineEventlistener() {
 
             // If we are still in game, or the cell isnt a mine, we reveal the clicked cell
             if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); console.log(!isGameOver, !element.target.classList.contains("mine")) }
-            else { revealMines(); isGameOver = true }
+            else { revealMines(); markDisable(rightEventListener); isGameOver = true }
         }
     }
-    fieldList.forEach(field => {
-        // left ckick event listening
-        field.addEventListener("mousedown", leftEventListener)
-
-        //Right click/long holding on mobile, event listening = marking a tile
-        field.addEventListener("contextmenu", element => {
+    const rightEventListener = element => {
             const tile = element.target
             if (tile.classList.contains("unknownLight") || tile.classList.contains("unknownDark")) {
                 tile.classList.toggle("marked")
@@ -81,7 +76,13 @@ function mineEventlistener() {
                     tile.style.color = "red";
                 }
             }
-        })
+        }
+    fieldList.forEach(field => {
+        // left ckick event listening
+        field.addEventListener("mousedown", leftEventListener)
+
+        //Right click/long holding on mobile, event listening = marking a tile
+        field.addEventListener("contextmenu", rightEventListener)
     })
 }
 function minePlanter(clickedCell, mineAmount) {
@@ -98,7 +99,7 @@ function minePlanter(clickedCell, mineAmount) {
             areaPattern.forEach(([row, col]) => {
                 mines.forEach((cell) => {
                     if (minePos[0] == row + parseInt(cell.split(",")[0]) && minePos[1] == col + parseInt(cell.split(",")[1])) {
-                        if (randomInt(1, 2) != 2) passed = false
+                        if (randomInt(1, 3) == 1) passed = false
                     }
                 })
             }
@@ -175,6 +176,12 @@ function revealMines() {
         hiddenMine.classList.remove("unknownLight", "unknownDark")
     })
 }
+function markDisable(ezkellide){
+        let fieldList = document.querySelectorAll("td")
+        fieldList.forEach(e =>{
+            e.removeEventListener("contextmenu", ezkellide)
+        })
+    }
 
 document.addEventListener("contextmenu", e => e.preventDefault())
 generateField(fieldWidth, fieldHeight)
