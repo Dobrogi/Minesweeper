@@ -45,7 +45,7 @@ function generateField(...size) {
 }
 function mineEventlistener() {
     let fieldList = document.querySelectorAll("td")
-    const leftEventListener = (element) => { // <------ Disgusting variable
+    const leftEventListener = (element) => {
         if (element.button == 0) {
             // If it is the first click, it generates, the field
             if (isFirstClick) {
@@ -55,7 +55,26 @@ function mineEventlistener() {
 
             // If we are still in game, or the cell isnt a mine, we reveal the clicked cell
             if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); console.log(!isGameOver, !element.target.classList.contains("mine")) }
-            else { revealMines(); isGameOver = true }
+            else { revealMines(); markDisable(rightEventListener); resetGame(); isGameOver = true }
+        }
+    }
+    const rightEventListener = element => {
+        const tile = element.target
+        if (tile.classList.contains("unknownLight") || tile.classList.contains("unknownDark")) {
+            tile.classList.toggle("marked")
+
+            // If marked, doesnt listen to left clicks, and mark it
+            if (tile.classList.contains("marked")) {
+                tile.removeEventListener("mousedown", leftEventListener)
+                tile.textContent = "!"
+                tile.style.color = "red";
+            }
+            // else, yeah, they do, and unmark
+            else {
+                tile.addEventListener("mousedown", leftEventListener)
+                tile.textContent = ""
+                tile.style.color = "red";
+            }
         }
     }
     fieldList.forEach(field => {
@@ -63,46 +82,27 @@ function mineEventlistener() {
         field.addEventListener("mousedown", leftEventListener)
 
         //Right click/long holding on mobile, event listening = marking a tile
-        field.addEventListener("contextmenu", element => {
-            const tile = element.target
-            if (tile.classList.contains("unknownLight") || tile.classList.contains("unknownDark")) {
-                tile.classList.toggle("marked")
-
-                // If marked, doesnt listen to left clicks, and mark it
-                if (tile.classList.contains("marked")) {
-                    tile.removeEventListener("mousedown", leftEventListener)
-                    tile.textContent = "!"
-                    tile.style.color = "red";
-                }
-                // else, yeah, they do, and unmark
-                else {
-                    tile.addEventListener("mousedown", leftEventListener)
-                    tile.textContent = ""
-                    tile.style.color = "red";
-                }
-            }
-        })
+        field.addEventListener("contextmenu", rightEventListener)
     })
 }
 function minePlanter(clickedCell, mineAmount) {
     const cellRow = parseInt(clickedCell.dataset.rowValue)
     const cellCol = parseInt(clickedCell.dataset.colValue)
+
     while (mines.size < mineAmount) {
+        let minePosRow = randomInt(1, fieldHeight)
+        let minePosCol = randomInt(1, fieldWidth)
         let passed = true
-        let minePos = [randomInt(1, fieldHeight), randomInt(1, fieldWidth)]
+        let minePos = [minePosRow, minePosCol]
         diamondAreaPattern.forEach(([row, col]) => {
             if (minePos[0] == cellRow + row && minePos[1] == cellCol + col) {
                 passed = false
             }
-            ;
-            areaPattern.forEach(([row, col]) => {
-                mines.forEach((cell) => {
-                    if (minePos[0] == row + parseInt(cell.split(",")[0]) && minePos[1] == col + parseInt(cell.split(",")[1])) {
-                        if (randomInt(1, 2) != 2) passed = false
-                    }
-                })
-            }
-            )
+            mines.forEach((cell) => {
+                if (minePos[0] == row + parseInt(cell.split(",")[0]) && minePos[1] == col + parseInt(cell.split(",")[1])) {
+                    if (randomInt(1, 8) == 2) passed = false
+                }
+            })
         });
         if (passed) mines.add(minePos.join(","));
     }
@@ -175,6 +175,21 @@ function revealMines() {
         hiddenMine.classList.remove("unknownLight", "unknownDark")
     })
 }
+function markDisable(listener) {
+    let fieldList = document.querySelectorAll("td")
+    fieldList.forEach(e => {
+        e.removeEventListener("contextmenu", listener)
+    })
+}
+function resetGame() {
+    setTimeout(() => {
+        document.querySelector("table").innerHTML = ""
+        isGameOver = false
+        isFirstClick = true
+        mines.clear()
+        generateField(fieldWidth, fieldHeight)
+    }, 500);
 
+}
 document.addEventListener("contextmenu", e => e.preventDefault())
 generateField(fieldWidth, fieldHeight)
