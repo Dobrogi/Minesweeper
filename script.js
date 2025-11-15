@@ -2,6 +2,7 @@ let isFirstClick = true
 let isGameOver = false
 const fieldHeight = 12
 const fieldWidth = 8
+let mines = new Set()
 const areaPattern = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1], [0, 0]]
 const bigAreaPattern = [
     [-2, -2], [-2, -1], [-2, 0], [-2, 1], [-2, 2],
@@ -16,7 +17,7 @@ const diamondAreaPattern = [
     [-2, 0], [2, 0], [0, -2], [0, 2],
     [-1, -1], [-1, 1], [1, -1], [1, 1]
 ]
-let mines = new Set()
+
 
 function generateField(...size) {
     let table = document.querySelector("table")
@@ -54,7 +55,7 @@ function mineEventlistener() {
             }
 
             // If we are still in game, or the cell isnt a mine, we reveal the clicked cell
-            if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); console.log(!isGameOver, !element.target.classList.contains("mine")) }
+            if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); gameFinished()}
             else { revealMines(); markDisable(rightEventListener); resetGame(); isGameOver = true }
         }
     }
@@ -65,13 +66,13 @@ function mineEventlistener() {
 
             // If marked, doesnt listen to left clicks, and mark it
             if (tile.classList.contains("marked")) {
-                tile.removeEventListener("mousedown", leftEventListener)
+                tile.removeEventListener("mouseup", leftEventListener)
                 tile.textContent = "!"
                 tile.style.color = "red";
             }
             // else, yeah, they do, and unmark
             else {
-                tile.addEventListener("mousedown", leftEventListener)
+                tile.addEventListener("mouseup", leftEventListener)
                 tile.textContent = ""
                 tile.style.color = "red";
             }
@@ -79,7 +80,7 @@ function mineEventlistener() {
     }
     fieldList.forEach(field => {
         // left ckick event listening
-        field.addEventListener("mousedown", leftEventListener)
+        field.addEventListener("mouseup", leftEventListener)
 
         //Right click/long holding on mobile, event listening = marking a tile
         field.addEventListener("contextmenu", rightEventListener)
@@ -100,7 +101,7 @@ function minePlanter(clickedCell, mineAmount) {
             }
             mines.forEach((cell) => {
                 if (minePos[0] == row + parseInt(cell.split(",")[0]) && minePos[1] == col + parseInt(cell.split(",")[1])) {
-                    if (randomInt(1, 8) == 2) passed = false
+                    if (randomInt(1, 5) == 2) passed = false
                 }
             })
         });
@@ -190,6 +191,17 @@ function resetGame() {
         generateField(fieldWidth, fieldHeight)
     }, 500);
 
+}
+function gameFinished(){
+    let hiddenTiles = document.querySelectorAll("td.unknownDark, td.unknownLight")
+    const minesArray = [...mines];
+    for (const tile of hiddenTiles){
+        const coord = `${tile.dataset.rowValue},${tile.dataset.colValue}`;
+        if (!minesArray.includes(coord)) {
+            return
+        }
+    }
+    console.log("elv nyertel")
 }
 document.addEventListener("contextmenu", e => e.preventDefault())
 generateField(fieldWidth, fieldHeight)
