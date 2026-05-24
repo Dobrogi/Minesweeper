@@ -56,7 +56,7 @@ function mineEventlistener() {
 
             // If we are still in game, or the cell isnt a mine, we reveal the clicked cell
             if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); gameFinished() }
-            else { revealMines(); markDisable(rightEventListener); resetGame(); isGameOver = true }
+            else { gameOver(rightEventListener) }
         }
     }
     const rightEventListener = element => {
@@ -77,8 +77,40 @@ function mineEventlistener() {
                 tile.style.color = "red";
             }
         }
+
+    }
+    const revealSafeCells = element => {
+        const tile = element.target
+        const cellRow = parseInt(tile.dataset.rowValue)
+        const cellCol = parseInt(tile.dataset.colValue)
         if (tile.classList.contains("blankLight") || tile.classList.contains("blankDark")) {
-            addEventListener("contextmenu", revealSafeCells)
+            //getting rid of empy cells in a disgusting way
+            if (tile.innerHTML == "") {
+                tile.removeEventListener("contextmenu", revealSafeCells)
+            }
+            let marked = 0
+            areaPattern.forEach(([rOffset, cOffset]) => {
+                const row = cellRow + rOffset
+                const col = cellCol + cOffset
+                const cell = document.querySelector(`td[data-row-value="${row}"][data-col-value="${col}"]`);
+                if (cell.classList.contains("marked")) marked++
+            })
+            if (marked == tile.innerHTML) {
+                areaPattern.forEach(([rOffset, cOffset]) => {
+                    const row = cellRow + rOffset
+                    const col = cellCol + cOffset
+                    const cell = document.querySelector(`td[data-row-value="${row}"][data-col-value="${col}"]`);
+                    if (cell.innerHTML != "!" && cell.classList.contains("mine")) {
+                        gameOver(rightEventListener)
+                    }
+                    if (cell.innerHTML != "!") {
+                        clearBlanks(cell)
+                    }
+
+                })
+
+            }
+
         }
     }
     fieldList.forEach(field => {
@@ -87,8 +119,14 @@ function mineEventlistener() {
 
         //Right click/long holding on mobile, event listening = marking a tile
         field.addEventListener("contextmenu", rightEventListener)
+
+        //Diggy diggy hole
+        field.addEventListener("contextmenu", revealSafeCells)
+
     })
+
 }
+
 function minePlanter(clickedCell, mineAmount) {
     const cellRow = parseInt(clickedCell.dataset.rowValue)
     const cellCol = parseInt(clickedCell.dataset.colValue)
@@ -185,10 +223,6 @@ function markDisable(listener) {
         e.removeEventListener("contextmenu", listener)
     })
 }
-function revealSafeCells() {
-    console.log("dadad");
-    
-}
 function resetGame() {
     setTimeout(() => {
         document.querySelector("table").innerHTML = ""
@@ -209,6 +243,12 @@ function gameFinished() {
         }
     }
     console.log("elv nyertel")
+}
+function gameOver(rightEventListener) {
+    revealMines()
+    markDisable(rightEventListener)
+    resetGame()
+    isGameOver = true
 }
 document.addEventListener("contextmenu", e => e.preventDefault())
 generateField(fieldWidth, fieldHeight)
