@@ -186,7 +186,7 @@ function markDisable(listener) {
     })
 }
 function revealSafeCells() {
-    console.log(element.target.innerHTML);
+    console.log("dadad");
     
 }
 function resetGame() {
