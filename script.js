@@ -93,18 +93,19 @@ function mineEventlistener() {
                 const row = cellRow + rOffset
                 const col = cellCol + cOffset
                 const cell = document.querySelector(`td[data-row-value="${row}"][data-col-value="${col}"]`);
-                if (cell.classList.contains("marked")) marked++
+                if (cell && cell.classList.contains("marked")) marked++
             })
             if (marked == tile.innerHTML) {
                 areaPattern.forEach(([rOffset, cOffset]) => {
                     const row = cellRow + rOffset
                     const col = cellCol + cOffset
                     const cell = document.querySelector(`td[data-row-value="${row}"][data-col-value="${col}"]`);
-                    if (cell.innerHTML != "!" && cell.classList.contains("mine")) {
+                    if (cell && cell.innerHTML != "!" && cell.classList.contains("mine")) {
                         gameOver(rightEventListener)
                     }
-                    if (cell.innerHTML != "!") {
+                    if (cell && cell.innerHTML != "!") {
                         clearBlanks(cell)
+                        gameFinished()
                     }
 
                 })
