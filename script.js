@@ -55,7 +55,7 @@ function mineEventlistener() {
             }
 
             // If we are still in game, or the cell isnt a mine, we reveal the clicked cell
-            if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); gameFinished()}
+            if (!element.target.classList.contains("mine") && !isGameOver) { clearBlanks(element.target); gameFinished() }
             else { revealMines(); markDisable(rightEventListener); resetGame(); isGameOver = true }
         }
     }
@@ -76,6 +76,9 @@ function mineEventlistener() {
                 tile.textContent = ""
                 tile.style.color = "red";
             }
+        }
+        if (tile.classList.contains("blankLight") || tile.classList.contains("blankDark")) {
+            addEventListener("contextmenu", revealSafeCells)
         }
     }
     fieldList.forEach(field => {
@@ -182,6 +185,10 @@ function markDisable(listener) {
         e.removeEventListener("contextmenu", listener)
     })
 }
+function revealSafeCells() {
+    console.log(element.target.innerHTML);
+    
+}
 function resetGame() {
     setTimeout(() => {
         document.querySelector("table").innerHTML = ""
@@ -192,10 +199,10 @@ function resetGame() {
     }, 500);
 
 }
-function gameFinished(){
+function gameFinished() {
     let hiddenTiles = document.querySelectorAll("td.unknownDark, td.unknownLight")
     const minesArray = [...mines];
-    for (const tile of hiddenTiles){
+    for (const tile of hiddenTiles) {
         const coord = `${tile.dataset.rowValue},${tile.dataset.colValue}`;
         if (!minesArray.includes(coord)) {
             return
